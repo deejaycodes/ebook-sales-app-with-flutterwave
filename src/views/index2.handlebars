@@ -1,0 +1,68 @@
+<section class="py-2">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <h1 class="display-3 mt-3 pt-5">
+                Web Development Ebook
+            </h1>
+            <p class="lead">Learn web development front to back</p>
+            <form id="payment-form" method="POST">
+                <script src="https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
+                
+                <button type="button" onClick="payWithRave()">Pay Now</button>
+                <script>
+                    // Hide default stripe button
+                    document.getElementsByTagName('button')[0].style.display = 'none';
+                </script>
+            
+                <button type="button" onClick="payWithRave()"class="btn btn-outline-dark text-white btn-lg">Purchase For $25</button>
+            </form>
+            <script>
+                const API_publicKey = "FLWPUBK-d6375ede05949132f1ef203cb77ec46a-X";
+
+                function payWithRave() {
+                    var x = getpaidSetup({
+                        PBFPubKey: API_publicKey,
+                        customer_email: "dtyhfuhe@example.com",
+                        amount: 2000,
+                        customer_phone: "234099940409",
+                        currency: "NGN",
+                        txref: "rave-194332458678",
+                        redirect_url:"localhost:3002/success",
+                        meta: [{
+                            metaname: "flightID",
+                            metavalue: "AP1234"
+                        }],
+                        onclose: function () { },
+                        callback: async (response) => {
+                            if (
+                                response.tx.chargeResponseCode == "00" ||
+                                response.tx.chargeResponseCode == "0"
+                            ) {
+
+
+                                //  Handle success
+                                console.log("success")
+                                const verifyResData = await fetch('flutterwave/verify', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ txref: response.tx.txRef })
+                                });     
+                                   
+                            } else {
+                                // redirect to a failure page.
+                            }
+
+                            x.close(); // use this to close the modal immediately after payment.
+                        }
+                    });
+                }
+            </script>
+        </div>
+        <div class="col-md-6">
+            <img src="/img/book.png" alt="" class="img-fluid">
+        </div>
+    </div>
+</section>
